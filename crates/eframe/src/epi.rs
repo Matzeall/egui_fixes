@@ -89,6 +89,11 @@ pub struct CreationContext<'s> {
     /// Raw platform display handle for window
     #[cfg(not(target_arch = "wasm32"))]
     pub(crate) raw_display_handle: Result<RawDisplayHandle, HandleError>,
+
+    /// Winit window shared reference (Option), only available in `CreationContext` (keep your own reference)
+    /// Not present on wgpu or when created not by the `GlowIntegration`
+    #[cfg(not(target_arch = "wasm32"))]
+    pub winit_window: Option<std::sync::Arc<winit::window::Window>>,
 }
 
 #[allow(unsafe_code)]
@@ -127,6 +132,7 @@ impl CreationContext<'_> {
             raw_window_handle: Err(HandleError::NotSupported),
             #[cfg(not(target_arch = "wasm32"))]
             raw_display_handle: Err(HandleError::NotSupported),
+            winit_window: None,
         }
     }
 }
